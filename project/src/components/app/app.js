@@ -13,9 +13,9 @@ class App extends Component {
     super(props);
     this.state = {
       data : [
-        {name: 'Saha V.', salary: '800', increase: false, id: 1},
-        {name: 'Timur S.', salary: '900', increase: false, id: 2},
-        {name: 'Vlad V.', salary: '1000', increase: true, id: 3},
+        {name: 'Saha V.', salary: '800', star:true, increase: false, id: 1},
+        {name: 'Timur S.', salary: '900', star:false, increase: false, id: 2},
+        {name: 'Vlad V.', salary: '1000', star:false, increase: true, id: 3},
       ]
     }
   }
@@ -33,10 +33,38 @@ class App extends Component {
     })
   }
 
+  onToggleIncrease = (id) => {
+    this.setState(({data}) => {
+      const index = data.findIndex(el => el.id === id);
+      const old = data[index];
+      const newItem = {...old, increase : !old.increase};
+      const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+      return {
+        data: newArr
+      }
+    })
+  }
+
+  onToggleRise = (id) => {
+    this.setState(({data}) => {
+      const index = data.findIndex(el => el.id === id);
+      const old = data[index];
+      const newItem = {...old, star : !old.star};
+      const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+      return {
+        data: newArr
+      }
+    })
+  }
+
 render() {
+  const employees = this.state.data.length;
+  const incr = this.state.data.filter((el) => el.increase).length;
   return (
     <div className="app">
-        <AppInfo />
+        <AppInfo getCash={employees}
+        getUp={incr}
+        />
 
         <div className="search-panel">
             <SearchPanel/>
@@ -44,7 +72,9 @@ render() {
         </div>
         
         <EmployeesList info = {this.state.data}
-                       onDelete={this.deleteItem}/>
+                       onDelete={this.deleteItem}
+                       onToggleIncrease = {this.onToggleIncrease}
+                       onToggleRise = {this.onToggleRise}/>
         <EmployeesAddForm/>
     </div>
   );
